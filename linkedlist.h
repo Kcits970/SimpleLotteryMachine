@@ -1,7 +1,7 @@
 #ifndef LINKEDLIST_H_
 #define LINKEDLIST_H_
 
-#define MAX_LIST_SIZE 4
+#define MAX_LIST_SIZE 100
 
 typedef struct node {
 	void* value;

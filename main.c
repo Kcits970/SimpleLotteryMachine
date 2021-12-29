@@ -20,9 +20,10 @@ void printMainOptions() {
 	printFormattedOption("PURCHASE TICKET", 'A');
 	printFormattedOption("BULK PURCHASE TICKETS", 'B');
 	printFormattedOption("SELL TICKET", 'C');
-	printFormattedOption("VIEW TICKET DETAILS", 'D');
-	printFormattedOption("VIEW ALL TICKETS", 'E');
-	printFormattedOption("VIEW USER STATUS", 'F');
+	printFormattedOption("SELL ALL TICKETS", 'D');
+	printFormattedOption("VIEW TICKET DETAILS", 'E');
+	printFormattedOption("VIEW ALL TICKETS", 'F');
+	printFormattedOption("VIEW USER STATUS", 'G');
 	printFormattedOption("EXIT", 'Q');
 }
 
@@ -104,6 +105,25 @@ void promptTicketSale() {
 	getCharacterInput(">>");
 }
 
+void promptAllTicketSale() {
+	printFormattedTitle("TICKET SALE PROMPT");
+
+	if (user->ticketList->size == 0)
+		printf("NO TICKETS ARE AVAILABLE TO SELL\n");
+	else {
+		for (TICKET* ticket = getNthTicket(user, 1); ticket != NULL; ticket = getNthTicket(user, 1)) {
+			int worth = ticket->worth;
+			sellNthTicket(user, 1);
+			addCash(user, worth);
+			printf("TICKET SOLD FOR $%d\n", worth);
+		}
+
+		printf("USER NOW HAS $%d\n", user->cash);
+	}
+
+	getCharacterInput(">>");
+}
+
 void promptTicketDetails() {
 	int n = getNthTicketSelection();
 	TICKET* ticket = getNthTicket(user, n);
@@ -143,9 +163,10 @@ void promptMainMenu() {
 		case 'A': promptPurchase(); break;
 		case 'B': promptBulkPurchase(); break;
 		case 'C': promptTicketSale(); break;
-		case 'D': promptTicketDetails(); break;
-		case 'E': promptAllTickets(); break;
-		case 'F': promptUserDetails(); break;
+		case 'D': promptAllTicketSale(); break;
+		case 'E': promptTicketDetails(); break;
+		case 'F': promptAllTickets(); break;
+		case 'G': promptUserDetails(); break;
 		case 'Q': exit(0);
 		default:
 			printf("'%c' IS NOT AN IDENTIFIABLE COMMAND\n", optionSelection);
