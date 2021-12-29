@@ -52,9 +52,15 @@ void promptPurchase() {
 		return;
 	}
 
-	addCash(user, -DEFAULT_TICKET_PRICE);
 	TICKET* ticket = getTicket(getLotteryTypeSelection());
-	addTicket(user, ticket);
+
+	if (addTicket(user, ticket)) {
+		addCash(user, -DEFAULT_TICKET_PRICE);
+		printf("PURCHASED A TICKET FOR $%d\n", DEFAULT_TICKET_PRICE);
+	}
+	else
+		printf("FAILED TO PURCHASE TICKET\n");
+
 	printf("USER NOW HAS $%d\n", user->cash);
 
 	getCharacterInput(">>");
@@ -69,18 +75,27 @@ void promptBulkPurchase() {
 		return;
 	}
 
-	addCash(user, -DEFAULT_TICKET_PRICE * numOfTickets);
 	int numOfAutoTickets = getNumberInput("ENTER THE PREFERRED NUMBER OF AUTO TICKETS: ", 0, numOfTickets);
 	int numOfManualTickets = numOfTickets - numOfAutoTickets;
 	printf("GENERATING %d AUTO TICKET(S), %d MANUAL TICKET(S)\n", numOfAutoTickets, numOfManualTickets);
 
 	for (int i = 0; i < numOfAutoTickets; i++) {
+		addCash(user, -DEFAULT_TICKET_PRICE);
 		addTicket(user, getTicket(TYPE_AUTO));
 	}
 
+	int validTickets = numOfAutoTickets; //auto tickets are always valid, manual tickets have a chance of being invalid.
+
 	for (int i = 0; i < numOfManualTickets; i++) {
-		addTicket(user, getTicket(TYPE_MANUAL));
+		if (!addTicket(user, getTicket(TYPE_MANUAL)))
+			printf("FAILED TO PURCHASE TICKET\n");
+		else {
+			addCash(user, -DEFAULT_TICKET_PRICE);
+			validTickets++;
+		}
 	}
+
+	printf("PURCHASED %d TICKET(S) FOR $%d\n", validTickets, validTickets * DEFAULT_TICKET_PRICE);
 	printf("USER NOW HAS $%d\n", user->cash);
 
 	getCharacterInput(">>");
@@ -108,16 +123,21 @@ void promptTicketSale() {
 void promptAllTicketSale() {
 	printFormattedTitle("TICKET SALE PROMPT");
 
-	if (user->ticketList->size == 0)
+	int numOfTickets = user->ticketList->size;
+	int totalWorth = 0;
+
+	if (numOfTickets == 0)
 		printf("NO TICKETS ARE AVAILABLE TO SELL\n");
 	else {
 		for (TICKET* ticket = getNthTicket(user, 1); ticket != NULL; ticket = getNthTicket(user, 1)) {
 			int worth = ticket->worth;
 			sellNthTicket(user, 1);
 			addCash(user, worth);
+			totalWorth += worth;
 			printf("TICKET SOLD FOR $%d\n", worth);
 		}
 
+		printf("%d TICKET(S) SOLD FOR $%d\n", numOfTickets, totalWorth);
 		printf("USER NOW HAS $%d\n", user->cash);
 	}
 

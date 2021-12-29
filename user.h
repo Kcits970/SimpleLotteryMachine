@@ -24,15 +24,14 @@ void addCash(USER* user, int amount) {
 	user->cash += amount;
 }
 
-void addTicket(USER* user, TICKET* ticket) {
-	user->ticketsBought++;
-	 
+bool addTicket(USER* user, TICKET* ticket) {
 	if (ticket != NULL) {
 		appendAtStart(user->ticketList, ticket, &deleteTicket);
-		printf("NEW TICKET ADDED\n");
+		user->ticketsBought++;
+		return true;
 	}
-	else
-		printf("FAILED TO ADD NEW TICKET\n");
+
+	return false;
 }
 
 void printTicketList(USER* user) {

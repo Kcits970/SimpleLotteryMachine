@@ -67,7 +67,7 @@ TICKET* getAutomatedTicket() {
 TICKET* getManualTicket() {
 	int* numberArray = getSequentialNumberArray(TICKET_NUMBERS_LOWER_BOUND, TICKET_NUMBERS_UPPER_BOUND);
 	printFormattedTitle("TICKET SHEET");
-	printAlignedNumberArray(numberArray, TICKET_NUMBERS_CARDINALITY, 7);
+	printAlignedNumberArray(numberArray, TICKET_NUMBERS_CARDINALITY, 8);
 
 	printf("SELECT %d UNIQUE NUMBERS: ", TICKET_SIZE);
 	getInputInDefaultBuffer("");
@@ -140,7 +140,6 @@ void printTicketDetails(TICKET* ticket) {
 	printAsTicket(ticket);
 
 	printf("GENERATED AT: %s", asctime(localtime(&ticket->time)));
-	printf("TICKET RANK: %d\n", ticket->rank);
 	printf("MATCHING NUMBERS: ");
 
 	if (ticket->rank == TICKET_SIZE + 1)
